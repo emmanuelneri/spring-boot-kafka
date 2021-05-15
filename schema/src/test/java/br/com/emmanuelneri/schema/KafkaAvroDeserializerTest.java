@@ -1,6 +1,6 @@
 package br.com.emmanuelneri.schema;
 
-import br.com.emmanuelneri.schema.orders.Order;
+import br.com.emmanuelneri.schema.avro.Order;
 import org.apache.kafka.common.errors.SerializationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,15 +12,15 @@ class KafkaAvroDeserializerTest {
     final private static KafkaAvroDeserializer deserializer = new KafkaAvroDeserializer();
 
     @Test
-    public void shoulDeserializelWhenDeSerializeAValidRecordOnMappedTopic() {
+    public void shouldDeserializeWhenDeSerializeAValidRecordOnMappedTopic() {
         final Order record = Order.newBuilder()
                 .setIdentifier("123")
                 .setCustomer("Customer")
                 .setValue(BigDecimal.valueOf(10.25))
                 .build();
 
-        final byte[] bytes = new KafkaAvroSerializer().serialize("orders", record);
-        final Object object = deserializer.deserialize("orders", bytes);
+        final byte[] bytes = new KafkaAvroSerializer().serialize(AvroSchemaConfig.ORDER.getTopic(), record);
+        final Object object = deserializer.deserialize(AvroSchemaConfig.ORDER.getTopic(), bytes);
         final Order order = (Order) object;
         Assertions.assertEquals("123", order.getIdentifier().toString());
         Assertions.assertEquals("Customer", order.getCustomer().toString());
@@ -29,7 +29,7 @@ class KafkaAvroDeserializerTest {
 
     @Test
     public void shouldFailWhenDeSerializeInUnmappedTopic() {
-        final br.com.emmanuelneri.schema.orders.Order record = Order.newBuilder()
+        final br.com.emmanuelneri.schema.avro.Order record = Order.newBuilder()
                 .setIdentifier("123")
                 .setCustomer("Customer")
                 .setValue(BigDecimal.TEN)

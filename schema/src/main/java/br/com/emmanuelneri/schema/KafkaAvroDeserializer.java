@@ -1,6 +1,5 @@
 package br.com.emmanuelneri.schema;
 
-import org.apache.avro.Schema;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.specific.SpecificDatumReader;
@@ -12,13 +11,14 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 public class KafkaAvroDeserializer implements Deserializer<Object> {
 
     private final Map<String, SpecificDatumReader<Object>> datumReaderConfig = new ConcurrentHashMap<>();
 
     public KafkaAvroDeserializer() {
-        configureSchema("orders", br.com.emmanuelneri.schema.orders.Order.getClassSchema());
+        configureSchema();
     }
 
     @Override
@@ -38,7 +38,8 @@ public class KafkaAvroDeserializer implements Deserializer<Object> {
         }
     }
 
-    private void configureSchema(final String topic, final Schema schema) {
-        datumReaderConfig.put(topic, new SpecificDatumReader<>(schema));
+    private void configureSchema() {
+        Stream.of(AvroSchemaConfig.values()).forEach(config ->
+                datumReaderConfig.put(config.getTopic(), new SpecificDatumReader<>(config.getSchema())));
     }
 }

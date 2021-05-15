@@ -1,6 +1,6 @@
 package br.com.emmanuelneri.producer.component;
 
-import br.com.emmanuelneri.schema.orders.Order;
+import br.com.emmanuelneri.schema.avro.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

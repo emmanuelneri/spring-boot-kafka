@@ -13,13 +13,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 public class KafkaAvroSerializer implements Serializer<Object> {
 
     private final Map<String, DatumWriter<Object>> datumWriterConfig = new ConcurrentHashMap<>();
 
     public KafkaAvroSerializer() {
-        configureSchema("orders", br.com.emmanuelneri.schema.orders.Order.getClassSchema());
+        configureSchema("orders", br.com.emmanuelneri.schema.avro.Order.getClassSchema());
     }
 
     @Override
@@ -52,7 +53,8 @@ public class KafkaAvroSerializer implements Serializer<Object> {
     }
 
     private void configureSchema(final String topic, final Schema schema) {
-        datumWriterConfig.put(topic, new SpecificDatumWriter<>(schema));
+        Stream.of(AvroSchemaConfig.values()).forEach(config ->
+                datumWriterConfig.put(config.getTopic(), new SpecificDatumWriter<>(config.getSchema())));
     }
 
 }

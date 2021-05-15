@@ -1,7 +1,7 @@
 package br.com.emmanuelneri.producer.controller;
 
 import br.com.emmanuelneri.producer.component.OrderProducer;
-import br.com.emmanuelneri.schema.orders.Order;
+import br.com.emmanuelneri.schema.avro.Order;
 import org.apache.avro.AvroRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,6 @@
 package br.com.emmanuelneri.schema;
 
-import br.com.emmanuelneri.schema.orders.Order;
+import br.com.emmanuelneri.schema.avro.Order;
 import org.apache.avro.AvroMissingFieldException;
 import org.apache.kafka.common.errors.SerializationException;
 import org.junit.jupiter.api.Assertions;
@@ -20,7 +20,7 @@ class KafkaAvroSerializerTest {
                 .setValue(BigDecimal.TEN)
                 .build();
 
-        final byte[] bytes = serializer.serialize("orders", record);
+        final byte[] bytes = serializer.serialize(AvroSchemaConfig.ORDER.getTopic(), record);
         Assertions.assertTrue(bytes.length > 0);
     }
 
@@ -37,7 +37,7 @@ class KafkaAvroSerializerTest {
     @Test
     public void shouldFailWhenSerializeRecordWithEmptyRequiredField() {
         Assertions.assertThrows(AvroMissingFieldException.class, () ->
-                serializer.serialize("orders", Order.newBuilder()
+                serializer.serialize(AvroSchemaConfig.ORDER.getTopic(), Order.newBuilder()
                         .setCustomer("Customer")
                         .setValue(BigDecimal.TEN)
                         .build()));

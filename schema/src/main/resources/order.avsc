@@ -1,5 +1,5 @@
 {
-  "namespace": "br.com.emmanuelneri.schema.orders",
+  "namespace": "br.com.emmanuelneri.schema.avro",
   "type": "record",
   "name": "Order",
   "fields": [
