@@ -1,5 +1,6 @@
-package br.com.emmanuelneri.producer;
+package br.com.emmanuelneri.producer.controller;
 
+import br.com.emmanuelneri.schema.KafkaAvroDeserializer;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -13,7 +14,6 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
@@ -53,16 +53,13 @@ public class ProducerAppTest {
         final Map<String, Object> consumerProps = KafkaTestUtils.consumerProps(CONSUMER_GROUP, "true", embeddedKafkaBroker);
         consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-        final JsonDeserializer<OrderRequest> orderRequestJsonDeserializer = new JsonDeserializer<>();
-        orderRequestJsonDeserializer.addTrustedPackages("br.com.emmanuelneri.producer");
-
-        final Consumer<String, OrderRequest> consumer = new DefaultKafkaConsumerFactory<>(consumerProps,
-                new StringDeserializer(), orderRequestJsonDeserializer)
+        final Consumer<String, Object> consumer = new DefaultKafkaConsumerFactory<>(consumerProps,
+                new StringDeserializer(), new KafkaAvroDeserializer())
                 .createConsumer();
 
         consumer.subscribe(Collections.singletonList(orderTopic));
 
-        final ConsumerRecord<String, OrderRequest> singleRecord = KafkaTestUtils.getSingleRecord(consumer, orderTopic);
+        final ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(consumer, orderTopic);
         Assertions.assertNotNull(singleRecord);
         Assertions.assertEquals(singleRecord.key(), "123");
     }

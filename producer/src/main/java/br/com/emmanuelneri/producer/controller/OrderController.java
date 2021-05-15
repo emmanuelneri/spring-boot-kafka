@@ -1,7 +1,8 @@
 package br.com.emmanuelneri.producer.controller;
 
-import br.com.emmanuelneri.producer.OrderRequest;
 import br.com.emmanuelneri.producer.component.OrderProducer;
+import br.com.emmanuelneri.schema.orders.Order;
+import org.apache.avro.AvroRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,6 @@ public class OrderController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderController.class);
 
-
     private final OrderProducer orderProducer;
 
     public OrderController(OrderProducer orderProducer) {
@@ -25,12 +25,21 @@ public class OrderController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Void> send(@RequestBody OrderRequest order) {
+    public ResponseEntity<Void> send(@RequestBody OrderRequest orderRequest) {
         try {
+            final Order order = Order.newBuilder()
+                    .setIdentifier(orderRequest.getIdentifier())
+                    .setCustomer(orderRequest.getCustomer())
+                    .setValue(orderRequest.getValue())
+                    .build();
+
             orderProducer.send(order);
             return ResponseEntity.accepted().build();
+        } catch (AvroRuntimeException ex) {
+            LOGGER.warn("invalid order request", ex);
+            return ResponseEntity.badRequest().build();
         } catch (Exception ex) {
-            LOGGER.error("fail on send orderRequest", ex);
+            LOGGER.error("fail to send orderRequest", ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

@@ -1,17 +1,17 @@
-package br.com.emmanuelneri.producer;
+package br.com.emmanuelneri.producer.controller;
 
 import java.math.BigDecimal;
 
-public class OrderRequest {
+class OrderRequest {
 
     private String identifier;
     private String customer;
     private BigDecimal value;
 
-    public OrderRequest() {
+    OrderRequest() {
     }
 
-    public OrderRequest(String identifier, String customer, BigDecimal value) {
+    OrderRequest(String identifier, String customer, BigDecimal value) {
         this.identifier = identifier;
         this.customer = customer;
         this.value = value;

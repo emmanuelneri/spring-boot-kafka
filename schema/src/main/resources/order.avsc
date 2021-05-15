@@ -1,0 +1,22 @@
+{
+  "namespace": "br.com.emmanuelneri.schema.orders",
+  "type": "record",
+  "name": "Order",
+  "fields": [
+    {
+      "name": "identifier",
+      "type": "string"
+    },
+    {
+      "name": "customer",
+      "type": "string"
+    },
+    {
+      "name": "value",
+      "type": [ {
+        "type": "string",
+        "java-class": "java.math.BigDecimal"
+      } ]
+    }
+  ]
+}
