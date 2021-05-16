@@ -1,6 +1,5 @@
 package br.com.emmanuelneri.schema;
 
-import org.apache.avro.Schema;
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.io.EncoderFactory;
@@ -20,7 +19,7 @@ public class KafkaAvroSerializer implements Serializer<Object> {
     private final Map<String, DatumWriter<Object>> datumWriterConfig = new ConcurrentHashMap<>();
 
     public KafkaAvroSerializer() {
-        configureSchema("orders", br.com.emmanuelneri.schema.avro.Order.getClassSchema());
+        configureSchema();
     }
 
     @Override
@@ -52,7 +51,7 @@ public class KafkaAvroSerializer implements Serializer<Object> {
         }
     }
 
-    private void configureSchema(final String topic, final Schema schema) {
+    private void configureSchema() {
         Stream.of(AvroSchemaConfig.values()).forEach(config ->
                 datumWriterConfig.put(config.getTopic(), new SpecificDatumWriter<>(config.getSchema())));
     }
