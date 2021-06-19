@@ -10,7 +10,7 @@ for i in $(seq 1 $total);do
 
   echo '---------'
 
-  curl -s -X POST ${url}
+  curl -s -X POST ${url} \
     -H "Content-Type: application/json" \
     -d "{\"identifier\": \"${identifier}\",\"customer\": \"${customer}\",\"value\": ${value}}"
 
