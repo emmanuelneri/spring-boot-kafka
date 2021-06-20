@@ -14,12 +14,11 @@ public class OrderProducer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderProducer.class);
 
-    @Value("${kafka.order.topic}")
-    private String orderTopic;
-
+    private final String orderTopic;
     private final KafkaTemplate<String, Order> kafkaTemplate;
 
-    public OrderProducer(final KafkaTemplate<String, Order> kafkaTemplate) {
+    public OrderProducer(@Value("${order.topic}") final String orderTopic, final KafkaTemplate<String, Order> kafkaTemplate) {
+        this.orderTopic = orderTopic;
         this.kafkaTemplate = kafkaTemplate;
     }
 

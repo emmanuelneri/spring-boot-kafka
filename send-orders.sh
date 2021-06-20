@@ -8,10 +8,10 @@ for i in $(seq 1 $total);do
   customer="Customer $(((RANDOM % 10 )+ 1))"
   value=$RANDOM
 
-  echo '---------'
-
   curl -s -X POST ${url} \
     -H "Content-Type: application/json" \
     -d "{\"identifier\": \"${identifier}\",\"customer\": \"${customer}\",\"value\": ${value}}"
+
+    echo "order sent ${i}"
 
 done
